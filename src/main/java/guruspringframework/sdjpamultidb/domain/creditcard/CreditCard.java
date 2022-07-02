@@ -22,6 +22,18 @@ public class CreditCard {
     @Convert(converter = CreditCardConverter.class)
     private String expirationDate;
 
+    @Transient
+    private String creditCardNumber;
+
+    @Transient
+    private String firstName;
+
+    @Transient
+    private String lastName;
+
+    @Transient
+    private String zipCode;
+
 }
 
 
