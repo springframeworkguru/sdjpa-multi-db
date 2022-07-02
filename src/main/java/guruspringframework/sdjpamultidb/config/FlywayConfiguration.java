@@ -1,5 +1,7 @@
 package guruspringframework.sdjpamultidb.config;
 
+import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,15 +19,48 @@ public class FlywayConfiguration {
         return new DataSourceProperties();
     }
 
+    @Bean(initMethod = "migrate")
+    public Flyway flywayCard(@Qualifier("cardFlywayDataSourceProps")
+                             DataSourceProperties cardFlywayDataSourceProps){
+        return Flyway.configure()
+                .dataSource(cardFlywayDataSourceProps.getUrl(),
+                        cardFlywayDataSourceProps.getUsername(),
+                        cardFlywayDataSourceProps.getPassword())
+                .locations("classpath:/db/migrations/card")
+                .load();
+    }
+
     @Bean
     @ConfigurationProperties("spring.cardholder.flyway")
     public DataSourceProperties cardholderFlywayDataSourceProps(){
         return new DataSourceProperties();
     }
 
+    @Bean(initMethod = "migrate")
+    public Flyway flywayCardHolder(@Qualifier("cardholderFlywayDataSourceProps")
+                                       DataSourceProperties cardholderFlywayDataSourceProps){
+        return Flyway.configure()
+                .dataSource(cardholderFlywayDataSourceProps.getUrl(),
+                        cardholderFlywayDataSourceProps.getUsername(),
+                        cardholderFlywayDataSourceProps.getPassword())
+                .locations("classpath:/db/migrations/cardholder")
+                .load();
+    }
+
     @Bean
     @ConfigurationProperties("spring.pan.flyway")
     public DataSourceProperties panFlywayDataSourceProps(){
         return new DataSourceProperties();
+    }
+
+    @Bean(initMethod = "migrate")
+    public Flyway flywayPan(@Qualifier("panFlywayDataSourceProps")
+                                DataSourceProperties panFlywayDataSourceProps){
+        return Flyway.configure()
+                .dataSource(panFlywayDataSourceProps.getUrl(),
+                        panFlywayDataSourceProps.getUsername(),
+                        panFlywayDataSourceProps.getPassword())
+                .locations("classpath:/db/migrations/pan")
+                .load();
     }
 }
